@@ -1,15 +1,19 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: my-gitlab-app
-  namespace: argocd
+  name: nginx-deployment
 spec:
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: <namespace-cible>
-  source:
-    repoURL: <URL-de-votre-référentiel-GitLab>
-    targetRevision: <nom-de-la-branche-ou-du-tag>
-    path: <chemin-vers-votre-application>
-  syncPolicy:
-    automated:
+  replicas: 3 # Nombre de répliques de NGINX
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
